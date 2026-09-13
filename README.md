@@ -46,3 +46,11 @@ Bateria de testes unitários desenvolvida com **PyTest** para validação das re
 ```bash
 # Executar a suíte de testes
 py -m pytest
+
+## 📸 Demonstração do Sistema
+
+### 📊 Dashboard Administrativo & Analytics SaaS
+![Dashboard FitLife](docs/dashboard.png)
+
+### 🔌 API RESTful (Endpoint JSON)
+![API REST](docs/api_json.png)
