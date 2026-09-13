@@ -55,6 +55,12 @@ py -m pytest
 ### 📊 Dashboard Administrativo & Analytics SaaS
 ![Dashboard FitLife](docs/dashboard.png)
 
+### 🏋️ Painel do Instrutor (Prescrição via Builder Pattern)
+![Painel Instrutor](docs/instrutor.png)
+
+### 👤 Área do Aluno (Visualização de Treinos & Validação de Status)
+![Área do Aluno](docs/aluno.png)
+
 ### 🔌 API RESTful (Endpoint JSON)
 ![API REST](docs/api_json.png)
 
