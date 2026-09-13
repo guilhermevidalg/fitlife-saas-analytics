@@ -45,7 +45,10 @@ Bateria de testes unitários desenvolvida com **PyTest** para validação das re
 
 ```bash
 # Executar a suíte de testes
-py -m pytest
+py -m pytest 
+```
+
+---
 
 ## 📸 Demonstração do Sistema
 
@@ -54,3 +57,37 @@ py -m pytest
 
 ### 🔌 API RESTful (Endpoint JSON)
 ![API REST](docs/api_json.png)
+
+---
+
+Markdown
+## 🚀 Como Executar o Projeto
+
+1. **Clone o repositório:**
+   ```bash
+   git clone [https://github.com/guilhermevidalg/fitlife-saas-analytics.git](https://github.com/guilhermevidalg/fitlife-saas-analytics.git)
+   cd fitlife-saas-analytics
+Instale as dependências:
+
+Bash
+py -m pip install flask flask_sqlalchemy pytest
+Execute a aplicação:
+
+Bash
+py app.py
+Acesse no navegador:
+
+http://127.0.0.1:5000
+
+
+---
+
+### **Passos finais para atualizar no GitHub:**
+
+1. Salve o arquivo no VS Code (`Ctrl + S`).
+2. Digite os 3 comandos no terminal:
+
+```powershell
+git add README.md
+git commit -m "docs: ajusta formatacao final dos passos de execucao"
+git push
