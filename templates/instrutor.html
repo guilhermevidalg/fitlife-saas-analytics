@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>FitLife — Montar Treino Semanal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+        body { background: #f1f5f9; color: #0f172a; }
+        header { background: #0f172a; color: white; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .container { max-width: 950px; margin: 32px auto; padding: 0 16px; }
+        .card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
+        .card-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: #1e293b; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+        
+        /* Estilo da caixa cinza onde ficam os exercícios */
+        .builder-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+        .ex-header { display: grid; grid-template-columns: 3fr 1fr 1fr 1fr 38px; gap: 10px; margin-bottom: 8px; padding: 0 4px; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+        .ex-row { display: grid; grid-template-columns: 3fr 1fr 1fr 1fr 38px; gap: 10px; align-items: center; margin-bottom: 10px; }
+        .ex-row:last-child { margin-bottom: 0; }
+        
+        input, select { padding: 10px 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 14px; width: 100%; background: #ffffff; }
+        .btn-add { background: #f1f5f9; color: #334155; border: 1px dashed #94a3b8; font-weight: 600; padding: 12px; border-radius: 8px; width: 100%; cursor: pointer; margin-bottom: 20px; transition: 0.2s; }
+        .btn-add:hover { background: #e2e8f0; }
+        .action-buttons { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+        .btn-submit { background: #16a34a; color: white; border: none; font-weight: 700; padding: 14px; border-radius: 8px; font-size: 15px; cursor: pointer; transition: 0.2s; }
+        .btn-submit:hover { background: #15803d; }
+        .btn-delete-day { background: #dc2626; color: white; border: none; font-weight: 700; padding: 14px; border-radius: 8px; font-size: 14px; cursor: pointer; transition: 0.2s; }
+        .btn-delete-day:hover { background: #b91c1c; }
+        .btn-remove { background: #fee2e2; color: #dc2626; border: none; padding: 10px; border-radius: 6px; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+        .msg-success { background: #dcfce7; color: #15803d; padding: 14px; border-radius: 8px; margin-bottom: 16px; font-weight: 600; border: 1px solid #bbf7d0; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><i class="fa-solid fa-dumbbell"></i> FitLife Instructor</div>
+        <div><a href="/logout" style="color:#f87171; text-decoration:none; font-weight:600;"><i class="fa-solid fa-power-off"></i> Sair</a></div>
+    </header>
+
+    <div class="container">
+        {% if msg %}<div class="msg-success"><i class="fa-solid fa-circle-check"></i> {{ msg }}</div>{% endif %}
+
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-calendar-plus" style="color:#2563eb;"></i> Prescrever ou Gerenciar Treino Diário</div>
+            
+            <!-- Base de Exercícios Dinâmica -->
+            <datalist id="lista-exercicios">
+                {% for ex in exercicios_base %}
+                    <option value="{{ ex.nome }} ({{ ex.grupo_muscular }})"></option>
+                {% endfor %}
+            </datalist>
+
+            <form id="form-instrutor" method="POST">
+                <div class="grid-2">
+                    <div>
+                        <label style="font-size: 12px; font-weight: 700; color: #64748b; display: block; margin-bottom: 6px;">1. SELECIONE O ALUNO</label>
+                        <select name="email_aluno" id="select_aluno" onchange="carregarFicha()">
+                            {% for a in alunos %}
+                                <option value="{{ a.email }}" {% if a.email == email_aluno_sel %}selected{% endif %}>{{ a.nome }} ({{ a.email }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="font-size: 12px; font-weight: 700; color: #64748b; display: block; margin-bottom: 6px;">2. DIA DA SEMANA</label>
+                        <select name="dia_semana" id="select_dia" onchange="carregarFicha()">
+                            {% for d in dias %}
+                                <option value="{{ d }}" {% if d == dia_semana_sel %}selected{% endif %}>{{ d }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div style="font-size: 13px; font-weight: 700; color: #475569; margin-bottom: 10px;">
+                    3. COMPOR EXERCÍCIOS DA FICHA 
+                    {% if treino_atual %}<span style="color: #2563eb; font-weight: 600;">(Exibindo treino salvo)</span>{% else %}<span style="color: #64748b; font-weight: 400;">(Dia atualmente sem treino - DESCANSO)</span>{% endif %}
+                </div>
+                
+                <!-- CAIXA PRINCIPAL DO BUILDER -->
+                <div class="builder-box">
+                    <!-- Cabeçalho explicativo dentro do quadrado -->
+                    <div class="ex-header">
+                        <div>Nome do Exercício</div>
+                        <div>Séries</div>
+                        <div>Reps</div>
+                        <div>Carga (kg)</div>
+                        <div></div>
+                    </div>
+
+                    <div id="exercicios-container">
+                        {% if treino_atual and treino_atual.itens %}
+                            {% for item in treino_atual.itens %}
+                                <div class="ex-row">
+                                    <input type="text" name="ex_nome[]" list="lista-exercicios" placeholder="Clique para ver a lista ou digite..." value="{{ item.nome }}" autocomplete="off" onfocus="abrirLista(this)" required>
+                                    <input type="number" name="ex_series[]" placeholder="Séries" value="{{ item.series }}" title="Séries">
+                                    <input type="number" name="ex_reps[]" placeholder="Reps" value="{{ item.repeticoes }}" title="Repetições">
+                                    <input type="number" step="0.5" name="ex_carga[]" placeholder="Carga (kg)" value="{{ item.carga }}" title="Carga (kg)">
+                                    <button type="button" class="btn-remove" onclick="removerLinha(this)"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="ex-row">
+                                <input type="text" name="ex_nome[]" list="lista-exercicios" placeholder="Clique para ver a lista ou digite..." autocomplete="off" onfocus="abrirLista(this)">
+                                <input type="number" name="ex_series[]" placeholder="Séries" value="3" title="Séries">
+                                <input type="number" name="ex_reps[]" placeholder="Reps" value="10" title="Repetições">
+                                <input type="number" step="0.5" name="ex_carga[]" placeholder="Carga (kg)" value="10.0" title="Carga (kg)">
+                                <button type="button" class="btn-remove" onclick="removerLinha(this)"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <button type="button" class="btn-add" onclick="adicionarLinha()"><i class="fa-solid fa-plus"></i> Adicionar Exercício ao Builder</button>
+
+                <div class="action-buttons">
+                    <button type="submit" class="btn-submit"><i class="fa-solid fa-gears"></i> SALVAR TREINO DO DIA </button>
+                    <button type="submit" name="acao_apagar" value="true" class="btn-delete-day" onclick="return confirm('Tem certeza que deseja apagar o treino deste dia?');"><i class="fa-solid fa-eraser"></i> APAGAR TREINO DO DIA</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function carregarFicha() {
+            const email = document.getElementById('select_aluno').value;
+            const dia = document.getElementById('select_dia').value;
+            window.location.href = `/instrutor?email_aluno=${encodeURIComponent(email)}&dia_semana=${encodeURIComponent(dia)}`;
+        }
+
+        function abrirLista(input) {
+            if (input.value === '') {
+                input.click();
+            }
+        }
+
+        function adicionarLinha() {
+            const container = document.getElementById('exercicios-container');
+            const novaLinha = document.createElement('div');
+            novaLinha.className = 'ex-row';
+            novaLinha.innerHTML = `
+                <input type="text" name="ex_nome[]" list="lista-exercicios" placeholder="Clique para ver a lista ou digite..." autocomplete="off" onfocus="abrirLista(this)" required>
+                <input type="number" name="ex_series[]" placeholder="Séries" value="3">
+                <input type="number" name="ex_reps[]" placeholder="Reps" value="10">
+                <input type="number" step="0.5" name="ex_carga[]" placeholder="Carga (kg)" value="0">
+                <button type="button" class="btn-remove" onclick="removerLinha(this)"><i class="fa-solid fa-trash"></i></button>
+            `;
+            container.appendChild(novaLinha);
+        }
+
+        function removerLinha(btn) {
+            const container = document.getElementById('exercicios-container');
+            if (container.children.length > 1) {
+                btn.parentElement.remove();
+            }
+        }
+    </script>
+</body>
+</html>

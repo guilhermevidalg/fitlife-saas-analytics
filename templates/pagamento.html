@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitLife — Assinatura e Pagamento</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+        body { background: #f1f5f9; color: #0f172a; padding: 40px 20px; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .container { width: 100%; max-width: 550px; background: white; padding: 32px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
+        h2 { font-size: 22px; font-weight: 700; margin-bottom: 8px; color: #0f172a; display: flex; align-items: center; gap: 10px; }
+        p.sub { font-size: 14px; color: #64748b; margin-bottom: 24px; }
+        
+        .section-title { font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+        
+        .planos-grid { display: grid; gap: 12px; margin-bottom: 24px; }
+        .plano-card { border: 1px solid #cbd5e1; padding: 16px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
+        .plano-card:hover { border-color: #2563eb; background: #eff6ff; }
+        .plano-card input { margin-right: 12px; }
+        
+        .metodos-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 28px; }
+        .metodo-item { border: 1px solid #cbd5e1; padding: 16px 8px; border-radius: 8px; text-align: center; cursor: pointer; font-size: 13px; font-weight: 600; color: #334155; transition: 0.2s; }
+        .metodo-item:hover { border-color: #2563eb; background: #f8fafc; }
+        .metodo-item i { font-size: 22px; display: block; margin-bottom: 8px; color: #2563eb; }
+        
+        .btn-pay { width: 100%; background: #16a34a; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 700; font-size: 15px; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn-pay:hover { background: #15803d; }
+        .btn-voltar { display: block; text-align: center; margin-top: 16px; font-size: 13px; color: #64748b; text-decoration: none; font-weight: 600; }
+        .btn-voltar:hover { color: #0f172a; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2><i class="fa-solid fa-credit-card" style="color: #2563eb;"></i> Ativar Assinatura FitLife</h2>
+        <p class="sub">Selecione seu plano e forma de pagamento para liberar o acesso total aos seus treinos.</p>
+
+        <form method="POST">
+            <div class="section-title">1. Escolha o Plano</div>
+            <div class="planos-grid">
+                {% for p in planos %}
+                    <label class="plano-card">
+                        <div style="display: flex; align-items: center;">
+                            <input type="radio" name="plano_id" value="{{ p.id }}" required {% if loop.first %}checked{% endif %}>
+                            <strong>{{ p.nome }}</strong>
+                        </div>
+                        <span style="color: #2563eb; font-weight: 700;">R$ {{ "%.2f"|format(p.valor) }}</span>
+                    </label>
+                {% endfor %}
+            </div>
+
+            <div class="section-title">2. Forma de Pagamento</div>
+            <div class="metodos-grid">
+                <label class="metodo-item">
+                    <input type="radio" name="metodo_pagamento" value="PIX" checked style="margin-bottom: 6px;">
+                    <i class="fa-solid fa-pix"></i> PIX
+                </label>
+                <label class="metodo-item">
+                    <input type="radio" name="metodo_pagamento" value="CARTAO" style="margin-bottom: 6px;">
+                    <i class="fa-regular fa-credit-card"></i> Cartão
+                </label>
+                <label class="metodo-item">
+                    <input type="radio" name="metodo_pagamento" value="BOLETO" style="margin-bottom: 6px;">
+                    <i class="fa-solid fa-barcode"></i> Boleto
+                </label>
+            </div>
+
+            <button type="submit" class="btn-pay"><i class="fa-solid fa-lock"></i> Confirmar Pagamento & Ativar Plano</button>
+            <a href="/aluno" class="btn-voltar"><i class="fa-solid fa-arrow-left"></i> Voltar ao painel do aluno</a>
+        </form>
+    </div>
+</body>
+</html>

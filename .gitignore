@@ -1,0 +1,15 @@
+# Cache do Python (arquivos compilados localmente)
+__pycache__/
+*.pyc
+*.pyo
+
+# Cache do PyTest
+.pytest_cache/
+
+# Banco de dados local (para não sobrescrever ou expor dados de teste)
+instance/
+*.db
+*.sqlite3
+
+# Configurações do VS Code
+.vscode/

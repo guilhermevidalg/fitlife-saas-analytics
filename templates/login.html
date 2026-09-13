@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitLife — Acesso ao Sistema</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+        body { min-height: 100vh; display: flex; background: #0f172a; color: #0f172a; }
+
+        /* Contêiner Split Screen */
+        .split-container { display: flex; width: 100%; min-height: 100vh; }
+
+        /* Lado Esquerdo: Banner Ilustrativo */
+        .brand-side {
+            flex: 1;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 58, 138, 0.85) 100%),
+                        url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1200&auto=format&fit=crop') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 48px;
+            color: white;
+        }
+
+        .brand-logo { font-size: 28px; font-weight: 700; display: flex; align-items: center; gap: 12px; }
+        .brand-logo i { color: #3b82f6; }
+
+        .brand-hero h1 { font-size: 36px; font-weight: 700; line-height: 1.2; margin-bottom: 16px; }
+        .brand-hero p { font-size: 16px; color: #94a3b8; max-width: 480px; line-height: 1.5; }
+
+        .brand-footer { font-size: 13px; color: #64748b; }
+
+        /* Lado Direito: Formulário de Login */
+        .form-side {
+            width: 480px;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 48px 40px;
+        }
+
+        .form-header { margin-bottom: 32px; }
+        .form-header h2 { font-size: 24px; font-weight: 700; color: #0f172a; margin-bottom: 6px; }
+        .form-header p { font-size: 14px; color: #64748b; }
+        .form-header a { color: #2563eb; font-weight: 600; text-decoration: none; }
+        .form-header a:hover { text-decoration: underline; }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-wrapper i { position: absolute; left: 14px; color: #94a3b8; font-size: 15px; }
+        .input-wrapper input {
+            width: 100%;
+            padding: 12px 14px 12px 42px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: 0.2s;
+            background: #f8fafc;
+        }
+        .input-wrapper input:focus { border-color: #2563eb; background: #ffffff; outline: none; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+
+        .btn-submit {
+            width: 100%;
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .btn-submit:hover { background: #1d4ed8; }
+
+        .erro-banner { background: #fee2e2; color: #dc2626; padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 20px; text-align: center; border: 1px solid #fca5a5; }
+
+        .demo-accounts {
+            margin-top: 32px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 16px;
+            border: 1px solid #e2e8f0;
+        }
+        .demo-accounts h4 { font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 8px; text-transform: uppercase; }
+        .demo-accounts ul { list-style: none; font-size: 12px; color: #64748b; line-height: 1.6; }
+
+        /* Adaptabilidade para telas pequenas (Mobile) */
+        @media (max-width: 900px) {
+            .brand-side { display: none; }
+            .form-side { width: 100%; min-height: 100vh; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="split-container">
+        <!-- Lado Esquerdo: Marca & Banner -->
+        <div class="brand-side">
+            <div class="brand-logo">
+                <i class="fa-solid fa-dumbbell"></i> FitLife
+            </div>
+            <div class="brand-hero">
+                <h1>Gestão Inteligente & Treinos Personalizados</h1>
+                <p>Acompanhe sua evolução, gerencie prescrições de treinos e controle planos em uma única plataforma.</p>
+            </div>
+            <div class="brand-footer">
+                &copy; FitLife System — Padrões de Projeto & Arquitetura Web
+            </div>
+        </div>
+
+        <!-- Lado Direito: Login -->
+        <div class="form-side">
+            <div class="form-header">
+                <h2>Acessar Plataforma</h2>
+                <p>Ainda não tem conta? <a href="/registro">Cadastre-se online</a></p>
+            </div>
+
+            {% if erro %}
+                <div class="erro-banner"><i class="fa-solid fa-circle-exclamation"></i> {{ erro }}</div>
+            {% endif %}
+
+            <form method="POST">
+                <div class="form-group">
+                    <label>E-mail de Acesso</label>
+                    <div class="input-wrapper">
+                        <i class="fa-regular fa-envelope"></i>
+                        <input type="email" name="email" placeholder="seu@email.com" required value="admin@fitlife.com">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Senha</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" name="senha" placeholder="••••••••" required value="1234">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    Entrar no Sistema <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <div class="demo-accounts">
+                <h4><i class="fa-solid fa-key"></i> Contas de Demonstração (Senha: 1234)</h4>
+                <ul>
+                    <li><strong>Admin:</strong> admin@fitlife.com</li>
+                    <li><strong>Instrutor:</strong> instrutor@fitlife.com</li>
+                    <li><strong>Aluno:</strong> aluno@fitlife.com</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
