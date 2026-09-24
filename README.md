@@ -1,4 +1,4 @@
-# 🏋️ FitLife — Sistema SaaS de Gestão de Academias
+# 🏋️ FitLife — Sistema SaaS de Gestão de Treinos em Academias
 
 O **FitLife** é um sistema SaaS full-stack desenvolvido em **Python** e **Flask** para gerenciamento completo de academias, alunos, instrutores e prescrição de treinos. 
 
