@@ -68,6 +68,26 @@ with app.app_context():
 
 @app.route("/", methods=["GET", "POST"])
 def login():
+    """
+    Página de Login e Autenticação
+    ---
+    tags:
+      - Autenticação
+    parameters:
+      - name: email
+        in: formData
+        type: string
+        required: false
+        description: Endereço de e-mail do usuário
+      - name: senha
+        in: formData
+        type: string
+        required: false
+        description: Senha de acesso
+    responses:
+      200:
+        description: Exibe o formulário de login ou redireciona conforme o perfil do usuário.
+    """
     erro = None
     if request.method == "POST":
         email = request.form["email"]
@@ -93,6 +113,33 @@ def login():
 
 @app.route("/registro", methods=["GET", "POST"])
 def registro():
+    """
+    Cadastro de Novo Aluno
+    ---
+    tags:
+      - Autenticação
+    parameters:
+      - name: nome
+        in: formData
+        type: string
+        required: false
+        description: Nome completo do aluno
+      - name: email
+        in: formData
+        type: string
+        required: false
+        description: E-mail para cadastro
+      - name: senha
+        in: formData
+        type: string
+        required: false
+        description: Senha da nova conta
+    responses:
+      200:
+        description: Exibe a página de registro de conta.
+      302:
+        description: Redireciona para a página de login após o cadastro bem-sucedido.
+    """
     erro = None
     if request.method == "POST":
         nome = request.form["nome"]
@@ -118,6 +165,28 @@ def registro():
 
 @app.route("/instrutor", methods=["GET", "POST"])
 def instrutor_dashboard():
+    """
+    Painel e Montagem de Treinos do Instrutor
+    ---
+    tags:
+      - Instrutor
+    parameters:
+      - name: email_aluno
+        in: query
+        type: string
+        required: false
+        description: E-mail do aluno selecionado
+      - name: dia_semana
+        in: query
+        type: string
+        required: false
+        description: Dia da semana para montagem do treino
+    responses:
+      200:
+        description: Retorna o painel do instrutor para gerenciar treinos.
+      302:
+        description: Redireciona se o usuário não for um Instrutor.
+    """
     if session.get("perfil") != "INSTRUTOR":
         return redirect(url_for("login"))
 
@@ -180,6 +249,17 @@ def instrutor_dashboard():
 
 @app.route("/admin")
 def admin_dashboard():
+    """
+    Painel de Analytics e Gestão SaaS (Admin)
+    ---
+    tags:
+      - Administrador
+    responses:
+      200:
+        description: Retorna o painel administrativo com métricas SaaS, MRR e gráficos.
+      302:
+        description: Redireciona para o login se o usuário não for Admin.
+    """
     if session.get("perfil") != "ADMIN":
         return redirect(url_for("login"))
     
@@ -224,6 +304,17 @@ def admin_dashboard():
 
 @app.route("/aluno")
 def aluno_dashboard():
+    """
+    Painel do Aluno e Cronograma de Treinos
+    ---
+    tags:
+      - Aluno
+    responses:
+      200:
+        description: Retorna o painel do aluno com a lista de treinos por dia da semana.
+      302:
+        description: Redireciona para o login se o usuário não estiver autenticado como Aluno.
+    """
     if session.get("perfil") != "ALUNO":
         return redirect(url_for("login"))
     aluno = UsuarioModel.query.get(session["usuario_id"])
@@ -235,8 +326,20 @@ def aluno_dashboard():
 
     return render_template("aluno.html", aluno=aluno, cronograma=cronograma)
 
+
 @app.route("/aluno/pagamento", methods=["GET", "POST"])
 def aluno_pagamento():
+    """
+    Gestão de Pagamento e Assinatura do Aluno
+    ---
+    tags:
+      - Aluno
+    responses:
+      200:
+        description: Exibe a tela para renovação/pagamento do plano do aluno.
+      302:
+        description: Redireciona para a dashboard do aluno após confirmação do pagamento.
+    """
     if session.get("perfil") != "ALUNO":
         return redirect(url_for("login"))
         
@@ -258,6 +361,15 @@ def aluno_pagamento():
 
 @app.route("/aluno/cancelar-assinatura", methods=["GET", "POST"])
 def cancelar_assinatura():
+    """
+    Cancelar Assinatura do Aluno
+    ---
+    tags:
+      - Aluno
+    responses:
+      302:
+        description: Altera o estado do aluno para CANCELADO e redireciona para a dashboard.
+    """
     if session.get("perfil") != "ALUNO":
         return redirect(url_for("login"))
 
@@ -273,6 +385,15 @@ def cancelar_assinatura():
 
 @app.route("/logout")
 def logout():
+    """
+    Encerrar Sessão do Usuário
+    ---
+    tags:
+      - Autenticação
+    responses:
+      302:
+        description: Limpa a sessão atual e redireciona para a tela de login.
+    """
     session.clear()
     return redirect(url_for("login"))
 
@@ -282,7 +403,15 @@ def logout():
 
 @app.route("/api/v1/alunos", methods=["GET"])
 def api_listar_alunos():
-    """Retorna a lista de alunos e seus respectivos status no formato JSON."""
+    """
+    Listar todos os alunos cadastrados
+    ---
+    tags:
+      - API REST
+    responses:
+      200:
+        description: Retorna uma lista em formato JSON com todos os alunos e o status das suas assinaturas.
+    """
     alunos = UsuarioModel.query.filter_by(perfil="ALUNO").all()
     
     lista_alunos = [
@@ -304,7 +433,25 @@ def api_listar_alunos():
 
 @app.route("/api/v1/alunos/<int:aluno_id>/treinos", methods=["GET"])
 def api_treinos_aluno(aluno_id):
-    """Retorna o cronograma de treinos de um aluno específico via JSON."""
+    """
+    Consultar o cronograma de treinos de um aluno
+    ---
+    tags:
+      - API REST
+    parameters:
+      - name: aluno_id
+        in: path
+        type: integer
+        required: true
+        description: ID único do aluno na base de dados
+    responses:
+      200:
+        description: Retorna o cronograma completo de treinos do aluno em JSON.
+      403:
+        description: Acesso bloqueado devido ao status da assinatura (ex. PENDENTE ou CANCELADO).
+      404:
+        description: Aluno não encontrado na base de dados.
+    """
     aluno = UsuarioModel.query.get(aluno_id)
     
     if not aluno or aluno.perfil != "ALUNO":
