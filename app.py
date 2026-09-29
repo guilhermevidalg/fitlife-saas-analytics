@@ -2,14 +2,16 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from models import db, UsuarioModel, PlanoModel, TreinoModel, ItemExercicioModel, ExercicioBaseModel, TreinoBuilder
 import os
 from sqlalchemy import func
+from flasgger import Swagger 
 
 
 app = Flask(__name__)
 app.secret_key = "fitlife_secret_key"
+swagger = Swagger(app)
 
 # Configuração do SQLite
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'instance', 'fitlife.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'fitlife.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
